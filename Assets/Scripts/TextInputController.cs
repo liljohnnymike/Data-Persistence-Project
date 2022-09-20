@@ -7,9 +7,9 @@ public class TextInputController : MonoBehaviour
 {
     public static TextInputController Instance;
 
-    [SerializeField] private string enteredName;
-    [SerializeField] private GameObject inputField;
-    [SerializeField] private GameObject displayedText;
+    [SerializeField] string enteredName;
+    [SerializeField] GameObject inputField;
+    [SerializeField] GameObject displayedText;
 
     private void Awake()
     {

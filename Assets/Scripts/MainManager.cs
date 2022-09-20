@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -16,10 +17,17 @@ public class MainManager : MonoBehaviour
     private bool m_Started = false;
     private int m_Points;
     
+    public int lastScore;
+    [SerializeField] GameObject highScoreText;
+    
     private bool m_GameOver = false;
 
-    
-    // Start is called before the first frame update
+
+    private void Awake()
+    {
+        LoadLastScore();
+    }
+
     void Start()
     {
         const float step = 0.6f;
@@ -40,6 +48,8 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
+        highScoreText.GetComponent<Text>().text = "Last Score : " + lastScore;
+
         if (!m_Started)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -55,6 +65,7 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            lastScore = m_Points;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -72,5 +83,33 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+    }
+
+    [System.Serializable]
+    class SaveData
+    {
+        public int lastScore;
+    }
+
+    public void SaveLastScore()
+    {
+        SaveData data = new SaveData();
+        data.lastScore = lastScore;
+
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+
+    public void LoadLastScore()
+    {
+        string path = Application.persistentDataPath + "savefile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            lastScore = data.lastScore;
+        }
     }
 }

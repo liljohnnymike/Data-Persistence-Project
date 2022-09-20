@@ -15,6 +15,5 @@ public class MenuButtonHandler : MonoBehaviour
 
         inputField.SetActive(false);
         startButton.SetActive(false);
-        finishButton.SetActive(false);
     }
 }
